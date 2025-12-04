@@ -1,5 +1,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
+#include <fstream>
 using namespace std;
 
 class Fisier {
@@ -118,6 +119,55 @@ public:
 		return out;
 	}
 
+	friend ofstream& operator<<(ofstream& out, const Fisier& f) {
+		//out << f.codFisier << endl;
+		out << f.numeFisier << endl;
+		out << f.nrAccesari << endl;
+		out << f.nrEditori << endl;
+		if (f.editori != nullptr) {
+			for (int i = 0; i < f.nrEditori - 1; i++) {
+				out << f.editori[i] << " ";
+			}
+			out << f.editori[f.nrEditori - 1] << endl;
+		}
+		else {
+			out << "Nu exista editori" << endl;
+		}
+		return out;
+	}
+
+	friend ifstream& operator>>(ifstream& in, Fisier& f) {
+		in >> f.numeFisier;
+		in >> f.nrAccesari;
+		in >> f.nrEditori;
+		if (f.editori != nullptr) {
+			delete[] f.editori;
+		}
+		f.editori = new string[f.nrEditori];
+		for (int i = 0; i < f.nrEditori; i++) {
+			in >> f.editori[i];
+		}
+		return in;
+	}
+
+	friend istream& operator>>(istream& in, Fisier& f) {
+		cout << "Introduceti numele" << endl;
+		in >> f.numeFisier;
+		cout << "Introduceti nr de accesari" << endl;
+		in >> f.nrAccesari;
+		cout << "Introduceti nr de editori" << endl;
+		in >> f.nrEditori;
+		cout << "Introduceti editorii" << endl;
+		if (f.editori != nullptr) {
+			delete[] f.editori;
+		}
+		f.editori = new string[f.nrEditori];
+		for (int i = 0; i < f.nrEditori; i++) {
+			in >> f.editori[i];
+		}
+		return in;
+	}
+
 	bool operator>(const Fisier& f) {
 		if (numeFisier.length() > f.numeFisier.length()) {
 			return true;
@@ -170,4 +220,14 @@ void main() {
 	}
 
 	cout << f5[2] << endl;
+
+	ofstream fout("Fisiere.txt");
+	fout << f2;
+	fout.close();
+
+	ifstream fin("Fisiere.txt");
+	Fisier f6;
+	fin >> f6;
+	cout << f6 << endl;
+	fin.close();
 }
